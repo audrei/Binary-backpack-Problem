@@ -8,28 +8,28 @@
 
 using namespace std;
 
-//estrutura para armazenar as informações dos itens 
+//estrutura para armazenar as informacoes dos itens 
 struct tipoItem
 {
     float peso; //peso do item
     float valor; //valor do item
 };
 
-//estrutura para armazenar soluções da mochila
+//estrutura para armazenar solucoes da mochila
 struct tipoSolucao
 {
     int n; //Quantidade  itens
-    float peso; //peso total da solução
-    float valor; //valor total da solução
+    float peso; //peso total da solucao
+    float valor; //valor total da solucao
     int *item; //mochila - tem um vetor binario para representar os itens
-    float capacidade; //capacidade máxima
-    float otimo; //solução ótima encontrada
+    float capacidade; //capacidade maxima
+    float otimo; //solucao otima encontrada
 };
 
-//zera as variavéis da solução e aloca de forma dinâmica o vetor binário de solução
+//zera as variaveis da solucao e aloca de forma dinamica o vetor binario de solucao
 void criaSolucao(tipoSolucao &s,int n,float capacidade, float otimo)
 {
-	/* crio uma solução de uma mochila vazia */
+	/* crio uma solucao de uma mochila vazia */
     s.n=n;
     s.peso=0;
     s.valor=0;
@@ -40,13 +40,13 @@ void criaSolucao(tipoSolucao &s,int n,float capacidade, float otimo)
         s.item[i]=0;
 }
 
-//apaga o vetor binário de solução que foi criado dinamicamente.
+//apaga o vetor binÃ¡rio de solucao que foi criado dinamicamente.
 void apagaSolucao(tipoSolucao &s)
 {
     delete s.item;
 }
 
-//função Lê o diretório com as instâncias e abre um menu de seleção e retorna a string contendo o nome do arquivo da instÃ¢ncia
+//funcao Le o diretorio com as instancia e abre um menu de selecao e retorna a string contendo o nome do arquivo da instancia
 //e do nome do arquivo com a resposta. 
 void selecionaInstancia(char nomeArq1[], char nomeArq2[], char nome[])
 {
@@ -117,7 +117,7 @@ void selecionaInstancia(char nomeArq1[], char nomeArq2[], char nome[])
     }
 }
 
-//Lê do arquivo os dados das instâncias 
+//Le do arquivo os dados das instancia 
  void carregaDados(tipoItem **itens, float &capacidade,int &n,float &otimo, char nome[])
 {
     char nomeArq1[300],nomeArq2[300];
@@ -169,7 +169,7 @@ void imprimeItens(tipoItem itens[], int n)
     cout<<endl;
 }
 
-//imprime os dados de uma solução
+//imprime os dados de uma solucao
 void imprimeSolucao( tipoSolucao s,tipoItem itens[] )
 {
     cout<<" Solucao\n";
@@ -197,21 +197,21 @@ void imprimeSolucao( tipoSolucao s,tipoItem itens[] )
     cout<<endl;
 }
 
-//cria uma solução aleatória
+//cria uma solucao aleatoria
 void solucaoInicial(tipoSolucao &s,tipoItem itens[])
 {
-    int *marca=new int[s.n]; //marcar quais já foram testados
+    int *marca=new int[s.n]; //marcar quais jÃƒÂ¡ foram testados
     int i,cont=0;
     for(i=0;i<s.n;i++)
     {
         marca[i]=0;
     }
 
-    while(s.peso<s.capacidade && cont<s.n) //enquanto o peso for menor que a  capacidade e o cont menor qu eo máximo
+    while(s.peso<s.capacidade && cont<s.n) //enquanto o peso for menor que a  capacidade e o cont menor que o minimo
     {
-        i=rand()%s.n; //sorteio uma posição aleatoria
+        i=rand()%s.n; //sorteio uma posicao aleatoria
         while(marca[i]==1) 
-            i=(i+1)%s.n;  	//se cair numa solução ocupada, eu ando pra frente, de forma circular ou seja chego no ultimo e volto no primeiro
+            i=(i+1)%s.n;  	//se cair numa solucao ocupada, eu ando pra frente, de forma circular ou seja chego no ultimo e volto no primeiro
                    
         if(s.peso+itens[i].peso<=s.capacidade)
         {
@@ -227,7 +227,7 @@ void solucaoInicial(tipoSolucao &s,tipoItem itens[])
         
 }
 
-//avalia a vizinhança de uma solução e retorna true se encontrou um vizinho melhor.
+//avalia a vizinhanca de uma solucao e retorna true se encontrou um vizinho melhor.
 bool avaliaVizinhanca(tipoSolucao &s, tipoItem itens[], int d)
 {
     int i,j, pos1=-1, pos2=-1, posd1=-1;
@@ -363,7 +363,7 @@ void buscaLocal(tipoSolucao &s, tipoItem itens[], char nome[])
     int d=2;	//distancia de busca
     int i=0;
     
- /*-------------------Usado para criar o arquivo de saída--------------------------*/   
+ /*-------------------Usado para criar o arquivo de saÃƒÂ­da--------------------------*/   
     ofstream fout;
     char nomearq[100];
 
@@ -380,11 +380,15 @@ void buscaLocal(tipoSolucao &s, tipoItem itens[], char nome[])
     fout<<s.otimo<<"\n";
     /*--------------------------------------------------------------------------------*/
 
-    solucaoInicial(s,itens); //se eu comento aqui a solução inicial é zero
+    solucaoInicial(s,itens); //se eu comento aqui a solucao inicial ÃƒÂ© zero
     imprimeSolucao(s,itens);
 
-    fout<<i<<" "<<s.valor<<"\n"; //gravando a solução inicial
-   
+    fout<<i<<" "<<s.valor<<"\n"; //gravando a solucao inicial
+
+   /*
+        Para o VND eu faÃƒÂ§ÃƒÂµ a busca, se nÃƒÂ£o achei eu amplio minha vizinhanÃƒÂ§a
+        para o VNS ÃƒÂ© necessario realizar a agitaÃƒÂ§ÃƒÂ£o
+   */
     while(teste)
     {
         teste=avaliaVizinhanca(s,itens,d);
@@ -392,49 +396,225 @@ void buscaLocal(tipoSolucao &s, tipoItem itens[], char nome[])
         {
             i++;
             imprimeSolucao(s,itens);
-            fout<<i<<" "<<s.valor<<"\n"; //gravando a soluÃ§Ã£o atual
+            fout<<i<<" "<<s.valor<<"\n"; //gravando a soluÃƒÂ§ÃƒÂ£o atual
+
         }
         
     }
-    fout.close(); //fechar o arquivo de saÃ­da
+    fout.close(); //fechar o arquivo de saÃƒÂ­da
 }
 
 
+void VND(tipoSolucao &s, tipoItem itens[], char nome[])
+{
+    
+    bool teste=true;
+    int d=2;	//distancia de busca
+    int i=0;
+    
+ /*-------------------Usado para criar o arquivo de saÃƒÂ­da--------------------------*/   
+    ofstream fout;
+    char nomearq[100];
+
+    
+    strcpy(nomearq,nome);
+    strcat(nomearq,"_saida.txt");
+    fout.open(nomearq);
+    if(!fout.is_open())
+    {
+        cout<<"Erro ao criar o arquivo saida.txt"<<endl;
+        exit(0);
+    }
+    fout<<nome<<"\n";
+    fout<<s.otimo<<"\n";
+    /*--------------------------------------------------------------------------------*/
+
+    solucaoInicial(s,itens); //se eu comento aqui a soluÃƒÂ§ÃƒÂ£o inicial ÃƒÂ© zero
+    imprimeSolucao(s,itens);
+
+    fout<<i<<" "<<s.valor<<"\n"; //gravando a soluÃƒÂ§ÃƒÂ£o inicial
+
+   /*
+        Para o VND eu faÃƒÂ§ÃƒÂµ a busca, se nÃƒÂ£o achei eu amplio minha vizinhanÃƒÂ§a
+        para o VNS ÃƒÂ© necessario realizar a agitaÃƒÂ§ÃƒÂ£o
+   */
+    while(teste && d <= 2)
+    {
+        teste=avaliaVizinhanca(s,itens,d);
+        if(teste)
+        {
+            i++;
+            imprimeSolucao(s,itens);
+            fout<<i<<" "<<s.valor<<"\n"; //gravando a soluÃƒÂ§ÃƒÂ£o atual
+            d = 1;
+        }else
+        {
+            cout<<"Ampliando o espaco de busca"<<endl;
+            d++;
+        }
+        
+    }
+    fout.close(); //fechar o arquivo de saÃƒÂ­da
+}
+
+void sorteio(tipoSolucao s,tipoSolucao &ss, tipoItem itens[], int d)
+{   
+    int *marca=new int[s.n]; //marcar quais jÃƒÂ¡ foram testados
+    int count = 1, i, peso_aux = 0,valor_aux = 0;
+    ss = s;
+    cout<<"itens antes do sorteio"<<endl;
+    cout<<"Valor de d: "<<d<<endl;
+    cout<<" mochila antes do sorteio"<<endl;
+    for(i=0;i<s.n;i++)
+    {
+        marca[i]=0;
+        cout<<s.item[i];
+    }
+
+    cout<<endl;
+    while(count <= d)//Enquanto eu nÃ£o troquei os bits necessesario eu permanesso no while
+    {
+        i=rand()%s.n; //sorteio uma posicao aleatoria
+        while(marca[i]==1) 
+            i=(i+1)%ss.n;  	//se cair numa solucao ocupada, eu ando pra frente, de forma circular ou seja chego no ultimo e volto no primeiro
+
+        if(ss.item[i]==0)
+        {
+            peso_aux=ss.peso+itens[i].peso;
+            valor_aux=ss.valor+itens[i].valor;         
+        }
+        else
+        {
+            peso_aux = ss.peso-itens[i].peso;
+            valor_aux = ss.valor-itens[i].valor;
+        }
+        if(peso_aux < ss.capacidade)
+        {
+
+            ss.item[i]=(1+ss.item[i])%2;
+            ss.peso = peso_aux;
+            ss.valor = valor_aux;
+            count++;
+        }else
+        {
+            peso_aux = 0;
+            valor_aux = 0;
+
+        }
+        marca[i]=1;
+    }
+    //itens depois o sorteio
+    cout<<endl<<" mochila apos do sorteio"<<endl;
+    for(i=0;i<ss.n;i++)
+    {
+        cout<<ss.item[i];
+    }
+    imprimeSolucao(ss,itens);
+    delete marca;
+    
+}
 
 
+void VNS(tipoSolucao &s, tipoItem itens[], char nome[])
+{
+	
+/*------------------- variaveis Locais -------------------------------------------*/
+	bool teste=true;
+    int d = 1,numItera = 0, numItera_max = 5;
+    int i=0;
+    tipoSolucao ss;
+    
+
+/*-------------------Usado para criar o arquivo de saida--------------------------*/   
+    ofstream fout;
+    char nomearq[100];
+
+    
+    strcpy(nomearq,nome);
+    strcat(nomearq,"_saida.txt");
+    fout.open(nomearq);
+    if(!fout.is_open())
+    {
+        cout<<"Erro ao criar o arquivo saida.txt"<<endl;
+        exit(0);
+    }
+    fout<<nome<<"\n";
+    fout<<s.otimo<<"\n";
+/*--------------------------------------------------------------------------------*/
+    
+	cout<< "X recebe a solucao inicial"<<endl;
+    solucaoInicial(s,itens); //se eu comento aqui a solucao inicial ÃƒÂ© zero
+    imprimeSolucao(s,itens);
+    fout<<i<<" "<<s.valor<<"\n"; //gravando a solucao inicial
+
+    while((numItera <= numItera_max) && (ss.valor != ss.otimo))
+    {
+		sorteio(s, ss, itens, d);
+		teste = true;
+	    
+		 while(teste && d <= 2)
+	    {
+	        teste=avaliaVizinhanca(ss,itens,d);
+	        if(teste)
+	        {
+	        	
+				
+	            i++;
+	            imprimeSolucao(ss,itens);
+	             s = ss;
+	            fout<<i<<" "<<s.valor<<"\n"; //gravando a solucao atual
+	            d = 1;
+		   		
+	        }else
+	        {
+	            cout<<"Ampliando o espaco de busca"<<endl;
+	            d++;
+	        }
+	        
+	    }
+	    numItera++;
+	}
+    fout.close(); //fechar o arquivo de saida
+
+
+}
 int main()
 {
     tipoItem *itens; //crio um vetor de itens
-    float otimo; //variavél para armazenar o ótimo
-    float capacidade; // variavél para armazenar a capacidade
-    int n; // variavél para armezanar quantidade de itens
-    tipoSolucao sOtima; // crio uma variavel tipo solução
+    float otimo; //variavel para armazenar o otimo
+    float capacidade; // variavel para armazenar a capacidade
+    int n; // variavÃƒÂ©l para armezanar quantidade de itens
+    tipoSolucao sOtima; // crio uma variavel tipo solucao
     char nome[100];
     
-    //criando a semente dos números aleatório
-    unsigned seed = time(NULL); // Retorna o valor em segundos desde janeiro de 1970
-    srand(seed); //crio um número aleatorio de acordo com a seed
+    //criando a semente dos nÃƒÂºmeros aleatÃƒÂ³rio
 
-    //escolhe e carrega os dados das instância
+
+    unsigned seed = time(NULL); // Retorna o valor em segundos desde janeiro de 1970
+    srand(seed); //crio um nÃƒÂºmero aleatorio de acordo com a seed
+
+    //escolhe e carrega os dados das instancia
     carregaDados(&itens,capacidade,n,otimo,nome);
     //imprimeItens(itens,n);
     
-    //cria a solução (zera e aloca o vetor binário)
+    //cria a solucao (zera e aloca o vetor binario)
     criaSolucao(sOtima,n,capacidade,otimo);
     
-    //função de otimização
-    buscaLocal(sOtima, itens,nome);
+    //funcoes de otimizacao
+    //buscaLocal(sOtima, itens,nome);
+    VNS(sOtima, itens,nome);
     
-    //melhor solução
+    //melhor solucao
     cout<<"\n\n Melhor Solucao:";
     imprimeSolucao(sOtima,itens);
 
     cout<<"Arquivo de saida criado: "<<nome<<"_saida.txt";
     
-    //apaga o vetor binário criado de forma dinâmica
+    //apaga o vetor binario criado de forma dinamica
     apagaSolucao(sOtima);
     
     //apaga o vetor de itens;
     delete itens;
     return 0;
 }
+
